@@ -1,21 +1,20 @@
 package org.isuncy.wtet_backend.services.user.Impl;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.UUID;
-import cn.hutool.crypto.digest.DigestAlgorithm;
 import cn.hutool.crypto.digest.DigestUtil;
-import cn.hutool.crypto.digest.Digester;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import io.jsonwebtoken.Claims;
 import org.isuncy.wtet_backend.entities.dto.UserLoginDTO;
 import org.isuncy.wtet_backend.entities.dto.UserRegisterDTO;
+import org.isuncy.wtet_backend.entities.dto.UserUpdateDTO;
 import org.isuncy.wtet_backend.entities.pojo.User;
 import org.isuncy.wtet_backend.entities.statics.Result;
+import org.isuncy.wtet_backend.entities.vo.UserInfoVO;
 import org.isuncy.wtet_backend.entities.vo.UserLoginVO;
 import org.isuncy.wtet_backend.mapper.user.UserMapper;
 import org.isuncy.wtet_backend.services.user.UserServiceI;
 import org.isuncy.wtet_backend.utils.JwtHelper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -58,6 +57,31 @@ public class UserServiceE implements UserServiceI {
         userLoginVO.setUsername(userLoginDTO.getUsername());
         userLoginVO.setNickname(user.getNickname());
         return new Result<UserLoginVO>().success(userLoginVO);
+    }
+
+    @Override
+    public Result<String> updateInfo(String userId, UserUpdateDTO userUpdateDTO) {
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("id", userId));
+        if (user == null) {
+            return new Result<String>().error("update failed");
+        }
+        user.setNickname(userUpdateDTO.getNickname());
+        user.setPassword(DigestUtil.sha256Hex(userUpdateDTO.getPassword()));
+        user.setUsername(userUpdateDTO.getUsername());
+        user.setWeight(userUpdateDTO.getWeight());
+        user.setHeight(userUpdateDTO.getHeight());
+        userMapper.updateById(user);
+        return new Result<String>().success();
+    }
+
+    @Override
+    public Result<UserInfoVO> getUserInfo(String userId) {
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("id", userId));
+        if (user == null) {
+            return new Result<UserInfoVO>().error("get user failed");
+        }
+        UserInfoVO userInfoVo = Convert.convert(UserInfoVO.class, user);
+        return new Result<UserInfoVO>().success(userInfoVo);
     }
 
 }

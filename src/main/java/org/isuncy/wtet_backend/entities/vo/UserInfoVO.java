@@ -1,16 +1,15 @@
-package org.isuncy.wtet_backend.entities.dto;
+package org.isuncy.wtet_backend.entities.vo;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserUpdateDTO {
+@NoArgsConstructor
+public class UserInfoVO {
     private String username;
     private String nickname;
-    private String password;
     private Double weight;
     private Double height;
 }

@@ -1,19 +1,22 @@
 package org.isuncy.wtet_backend.controllers;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import org.isuncy.wtet_backend.annotation.LogType;
 import org.isuncy.wtet_backend.annotation.OperLog;
 import org.isuncy.wtet_backend.entities.dto.UserLoginDTO;
 import org.isuncy.wtet_backend.entities.dto.UserRegisterDTO;
+import org.isuncy.wtet_backend.entities.dto.UserUpdateDTO;
 import org.isuncy.wtet_backend.entities.statics.Result;
+import org.isuncy.wtet_backend.entities.vo.UserInfoVO;
 import org.isuncy.wtet_backend.entities.vo.UserLoginVO;
 import org.isuncy.wtet_backend.services.user.UserServiceI;
+import org.isuncy.wtet_backend.utils.JwtHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/user")
@@ -21,6 +24,8 @@ public class UserController {
 
     @Autowired
     private UserServiceI userService;
+    @Autowired
+    private HttpServletRequest request;
 
     @PostMapping("/register")
     @Operation(summary = "注册用户")
@@ -41,5 +46,43 @@ public class UserController {
             return new Result<UserLoginVO>().error("字段不全");
         }
         return userService.login(userLoginDTO);
+    }
+
+    @PostMapping("/update")
+    @Operation(summary = "更新用户信息")
+    @OperLog(module = "用户", logType = LogType.INFO, comment = "更新用户信息")
+    public Result<String> update(@RequestBody UserUpdateDTO userUpdateDTO) {
+        if (!StringUtils.hasLength(userUpdateDTO.getUsername())
+        || !StringUtils.hasLength(userUpdateDTO.getPassword())
+        || !StringUtils.hasLength(userUpdateDTO.getNickname())) {
+            return new Result<String>().error("error");
+        }
+        String userId = getUserId();
+        if (userId == null) {
+            return new Result<String>().unAuth("未登录！");
+        }
+        return userService.updateInfo(userId, userUpdateDTO);
+    }
+
+    @GetMapping("/getInfo")
+    @Operation(summary = "获取用户信息")
+    @OperLog(module = "用户", logType = LogType.INFO, comment = "获取用户详细信息")
+    public Result<UserInfoVO> getSelfInfo() {
+        String userId = getUserId();
+        if (userId == null) {
+            return new Result<UserInfoVO>().unAuth("未登录");
+        }
+        return userService.getUserInfo(userId);
+    }
+
+
+    private String getUserId() {
+        String jwt = request.getHeader("Authentication");
+        if (!StringUtils.hasLength(jwt)) return null;
+        Map<String,Object> claims = JwtHelper.parseJWT(jwt);
+        if (claims != null) {
+            return (String) claims.get("id");
+        }
+        return null;
     }
 }
