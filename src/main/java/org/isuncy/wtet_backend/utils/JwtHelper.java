@@ -4,33 +4,35 @@ package org.isuncy.wtet_backend.utils;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
 
 public class JwtHelper {
-    private final static String signKey="as0f156!21A0D6F@CYsN%luxa";
-
-
+    private final static String signKey="sa070610nan060212qgcl247618xxxfqywyc";
+    private final static SecretKey key = Keys.hmacShaKeyFor(signKey.getBytes(StandardCharsets.UTF_8));
 
     public static String createJWT(Map<String, Object> claims){
-        String jwt= Jwts.builder().signWith(SignatureAlgorithm.HS256,signKey)
-                .setClaims(claims)
-                .setExpiration(new Date(System.currentTimeMillis()+3600*1000*4))
+        String jwt= Jwts.builder().signWith(key, Jwts.SIG.HS256)
+                .claims(claims)
+                .expiration(new Date(System.currentTimeMillis()+3600*1000*4))
                 .compact();
         return jwt;
     }
     public static String createJWT(Map<String, Object> claims,Long remainTime){
-        String jwt= Jwts.builder().signWith(SignatureAlgorithm.HS256,signKey)
-                .setClaims(claims)
-                .setExpiration(new Date(System.currentTimeMillis()+remainTime))
+        String jwt= Jwts.builder().signWith(key, Jwts.SIG.HS256)
+                .claims(claims)
+                .expiration(new Date(System.currentTimeMillis()+remainTime))
                 .compact();
         return jwt;
     }
     public static Claims parseJWT(String jwt){
         try {
-            return Jwts.parser().setSigningKey(signKey).parseClaimsJws(jwt).getBody();
+            return Jwts.parser().verifyWith(key).build().parseSignedClaims(jwt).getPayload();
         } catch (Exception e) {
             return null;
         }
