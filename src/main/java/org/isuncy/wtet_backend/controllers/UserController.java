@@ -57,7 +57,7 @@ public class UserController {
         || !StringUtils.hasLength(userUpdateDTO.getNickname())) {
             return new Result<String>().error("error");
         }
-        String userId = getUserId();
+        String userId = JwtHelper.getUserId(request);
         if (userId == null) {
             return new Result<String>().unAuth("未登录！");
         }
@@ -68,21 +68,11 @@ public class UserController {
     @Operation(summary = "获取用户信息")
     @OperLog(module = "用户", logType = LogType.INFO, comment = "获取用户详细信息")
     public Result<UserInfoVO> getSelfInfo() {
-        String userId = getUserId();
+        String userId = JwtHelper.getUserId(request);
         if (userId == null) {
             return new Result<UserInfoVO>().unAuth("未登录");
         }
         return userService.getUserInfo(userId);
     }
 
-
-    private String getUserId() {
-        String jwt = request.getHeader("Authentication");
-        if (!StringUtils.hasLength(jwt)) return null;
-        Map<String,Object> claims = JwtHelper.parseJWT(jwt);
-        if (claims != null) {
-            return (String) claims.get("id");
-        }
-        return null;
-    }
 }

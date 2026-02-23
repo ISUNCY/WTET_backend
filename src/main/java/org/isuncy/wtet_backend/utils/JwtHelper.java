@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -45,6 +46,16 @@ public class JwtHelper {
         } else {
             return JwtHelper.parseJWT(Authentication);
         }
+    }
+
+    public static String getUserId(HttpServletRequest request) {
+        String jwt = request.getHeader("Authentication");
+        if (!StringUtils.hasLength(jwt)) return null;
+        Map<String,Object> claims = JwtHelper.parseJWT(jwt);
+        if (claims != null) {
+            return (String) claims.get("id");
+        }
+        return null;
     }
 
 //    public static User getUser(HttpServletRequest request) {

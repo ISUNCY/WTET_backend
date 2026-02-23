@@ -5,13 +5,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.isuncy.wtet_backend.entities.enums.MealTime;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class DishAddDTO {
     String dishName;
-    String id;
     Double price;
     String description;
-    MealTime[] mealTimes;
+    List<String> labelsId;
 }
