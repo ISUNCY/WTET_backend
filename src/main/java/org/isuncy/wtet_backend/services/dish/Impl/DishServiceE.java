@@ -12,6 +12,7 @@ import org.isuncy.wtet_backend.entities.pojo.DishLabel;
 import org.isuncy.wtet_backend.entities.pojo.Label;
 import org.isuncy.wtet_backend.entities.statics.Result;
 import org.isuncy.wtet_backend.entities.vo.DishGetVO;
+import org.isuncy.wtet_backend.entities.vo.LabelGetVO;
 import org.isuncy.wtet_backend.mapper.dish.DishLabelMapper;
 import org.isuncy.wtet_backend.mapper.dish.DishMapper;
 import org.isuncy.wtet_backend.mapper.dish.LabelMapper;
@@ -48,9 +49,16 @@ public class DishServiceE implements DishServiceI {
     }
 
     @Override
-    public Result<List<Label>> getLabelList(String userId) {
+    public Result<List<LabelGetVO>> getLabelList(String userId) {
         List<Label> list =  labelMapper.selectList(new QueryWrapper<Label>().eq("user_id", userId));
-        return new Result<List<Label>>().success(list);
+        List<LabelGetVO> voList = new ArrayList<>();
+        for (Label label : list) {
+            LabelGetVO vo = new LabelGetVO();
+            vo.setId(label.getId());
+            vo.setLabelName(label.getLabelName());
+            voList.add(vo);
+        }
+        return new Result<List<LabelGetVO>>().success(voList);
     }
 
     @Override
@@ -67,7 +75,12 @@ public class DishServiceE implements DishServiceI {
         dish.setUserId(userId);
         dish.setId(UUID.randomUUID().toString());
         dish.setDescription(dishAddDTO.getDescription());
-        dish.setPrice(dishAddDTO.getPrice());
+        if (dishAddDTO.getPrice() != null) {
+            dish.setPrice(dishAddDTO.getPrice());
+        }
+        else {
+            dish.setPrice(0.0);
+        }
         dish.setFavourite(10);
         dish.setEatTimes(0);
         dishMapper.insert(dish);
@@ -120,13 +133,13 @@ public class DishServiceE implements DishServiceI {
         return new Result<DishGetVO>().success(dishGetVO);
     }
 
-    private List<Label> getDishLabels(String userId, String dishId) {
+    private List<LabelGetVO> getDishLabels(String userId, String dishId) {
         List<DishLabel> dishLabelList = dishLabelMapper.selectList(new QueryWrapper<DishLabel>().eq("user_id", userId).eq("dish_id", dishId));
-        List<Label> labels = new ArrayList<>();
+        List<LabelGetVO> labels = new ArrayList<>();
         for (DishLabel dishLabel : dishLabelList) {
             Label label = labelMapper.selectById(dishLabel.getLabelId());
             if (label == null) continue;
-            labels.add(label);
+            labels.add(new LabelGetVO(dishLabel.getLabelId(), label.getLabelName()));
         }
         return labels;
     }
@@ -145,10 +158,10 @@ public class DishServiceE implements DishServiceI {
         List<Dish> dishes = dishMapper.selectList(
                 new QueryWrapper<Dish>()
                         .eq("user_id", userId)
-                        .eq(!dishSelectDTO.getLabelId().isEmpty(), "dish_id", dishIds)
+                        .eq(!dishSelectDTO.getLabelId().isEmpty(), "id", dishIds)
                         .like(StringUtils.hasLength(dishSelectDTO.getDishName()), "dish_name", dishSelectDTO.getDishName())
-                        .ge(dishSelectDTO.getPrice_low() != null, "dish_price_low", dishSelectDTO.getPrice_low())
-                        .le(dishSelectDTO.getPrice_high() != null, "dish_price_high", dishSelectDTO.getPrice_high())
+                        .ge(dishSelectDTO.getPrice_low() != null, "price", dishSelectDTO.getPrice_low())
+                        .le(dishSelectDTO.getPrice_high() != null, "price", dishSelectDTO.getPrice_high())
         );
         List<DishGetVO> dishGetVOs = new ArrayList<>();
         for (Dish dish : dishes) {
@@ -157,5 +170,15 @@ public class DishServiceE implements DishServiceI {
             dishGetVOs.add(dishGetVO);
         }
         return new Result<List<DishGetVO>>().success(dishGetVOs);
+    }
+
+    @Override
+    public Result<String> updateLabel(String userId, String labelId, String labelName) {
+        if (!StringUtils.hasLength(labelId)) {
+            return new Result<String>().error("id is empty");
+        }
+        Label label = new Label(labelId, userId, labelName);
+        labelMapper.updateById(label);
+        return new Result<String>().success();
     }
 }

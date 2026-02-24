@@ -8,10 +8,12 @@ import org.isuncy.wtet_backend.annotation.OperLog;
 import org.isuncy.wtet_backend.entities.dto.DishAddDTO;
 import org.isuncy.wtet_backend.entities.dto.DishSelectDTO;
 import org.isuncy.wtet_backend.entities.dto.DishUpdateDTO;
+import org.isuncy.wtet_backend.entities.dto.LabelUpdateDTO;
 import org.isuncy.wtet_backend.entities.pojo.Dish;
 import org.isuncy.wtet_backend.entities.pojo.Label;
 import org.isuncy.wtet_backend.entities.statics.Result;
 import org.isuncy.wtet_backend.entities.vo.DishGetVO;
+import org.isuncy.wtet_backend.entities.vo.LabelGetVO;
 import org.isuncy.wtet_backend.services.dish.DishServiceI;
 import org.isuncy.wtet_backend.utils.JwtHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +42,10 @@ public class DishController {
         return dishService.addDish(userId, dishAddDTO);
     }
 
-    @PostMapping("/del")
+    @GetMapping("/del")
     @Operation(summary = "删除菜品")
     @OperLog(module = "菜品", logType = LogType.INFO, comment = "添加菜品")
-    public Result<String> delDish(@RequestBody String dishId) {
+    public Result<String> delDish(@RequestParam("dishId") String dishId) {
         String userId = JwtHelper.getUserId(request);
         if (!StringUtils.hasLength(userId)) {
             return new Result<String>().unAuth("<UNK>");
@@ -84,10 +86,10 @@ public class DishController {
         return dishService.selectDishes(userId, dishSelectDTO);
     }
 
-    @PostMapping("/label/add")
+    @GetMapping("/label/add")
     @Operation(summary = "添加标签")
     @OperLog(module = "菜品标签", logType = LogType.INFO, comment = "添加菜品标签")
-    public Result<String> addLabel(@RequestBody String labelName) {
+    public Result<String> addLabel(@RequestParam("labelName") String labelName) {
         String userId = JwtHelper.getUserId(request);
         if (userId == null) {
             return new Result<String>().unAuth("用户不存在");
@@ -101,23 +103,34 @@ public class DishController {
     @GetMapping("/label/getlist")
     @Operation(summary = "获取标签名称列表")
     @OperLog(module = "菜品标签", logType = LogType.INFO, comment="获取菜品标签列表")
-    public Result<List<Label>> getLabelList() {
+    public Result<List<LabelGetVO>> getLabelList() {
         String userId = JwtHelper.getUserId(request);
         if (userId == null) {
-            return new Result<List<Label>>().unAuth("用户不存在");
+            return new Result<List<LabelGetVO>>().unAuth("用户不存在");
         }
         return dishService.getLabelList(userId);
     }
 
-    @PostMapping("/label/del")
+    @GetMapping("/label/del")
     @Operation(summary = "删除标签")
     @OperLog(module = "菜品标签", logType = LogType.INFO, comment = "删除标签")
-    public Result<String> deleteLabel(@RequestBody String labelId) {
+    public Result<String> deleteLabel(@RequestParam("labelId") String labelId) {
         String userId = JwtHelper.getUserId(request);
         if (userId == null) {
             return new Result<String>().unAuth("用户不存在");
         }
         return dishService.deleteLabel(labelId);
+    }
+
+    @PostMapping("/label/update")
+    @Operation(summary = "更新标签")
+    @OperLog(module = "菜品标签", logType = LogType.INFO, comment = "更新标签")
+    public Result<String> deleteLabel(@RequestBody LabelUpdateDTO labelUpdateDTO) {
+        String userId = JwtHelper.getUserId(request);
+        if (userId == null) {
+            return new Result<String>().unAuth("<UNK>");
+        }
+        return dishService.updateLabel(userId, labelUpdateDTO.getLabelId(), labelUpdateDTO.getLabelName());
     }
 
 }

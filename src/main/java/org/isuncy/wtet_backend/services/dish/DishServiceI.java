@@ -6,13 +6,14 @@ import org.isuncy.wtet_backend.entities.dto.DishUpdateDTO;
 import org.isuncy.wtet_backend.entities.pojo.Label;
 import org.isuncy.wtet_backend.entities.statics.Result;
 import org.isuncy.wtet_backend.entities.vo.DishGetVO;
+import org.isuncy.wtet_backend.entities.vo.LabelGetVO;
 
 import java.util.List;
 
 public interface DishServiceI {
     Result<String> addLabel(String userId, String labelName);
 
-    Result<List<Label>> getLabelList(String userId);
+    Result<List<LabelGetVO>> getLabelList(String userId);
 
     Result<String> deleteLabel(String labelId);
 
@@ -25,4 +26,6 @@ public interface DishServiceI {
     Result<DishGetVO> getSingleDish(String userId, String dishId);
 
     Result<List<DishGetVO>> selectDishes(String userId, DishSelectDTO dishSelectDTO);
+
+    Result<String> updateLabel(String userId, String labelId, String labelName);
 }

@@ -12,11 +12,10 @@ import java.util.List;
 @AllArgsConstructor
 public class DishGetVO {
     String id;
-    String userId;      //用户id
     String dishName;    //菜品名称
     Double price;       //价格
     String description; //描述
     int favourite;      //喜好度
     int eatTimes;       //食用次数
-    List<Label> labels;
+    List<LabelGetVO> labels;
 }
