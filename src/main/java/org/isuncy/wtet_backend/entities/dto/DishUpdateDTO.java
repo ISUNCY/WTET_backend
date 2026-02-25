@@ -15,7 +15,7 @@ public class DishUpdateDTO {
     String dishName;    //菜品名称
     Double price;       //价格
     String description; //描述
-    int favourite;      //喜好度
-    int eatTimes;       //食用次数
+    Integer favourite;      //喜好度
+    Integer eatTimes;       //食用次数
     List<String> labelsId;
 }

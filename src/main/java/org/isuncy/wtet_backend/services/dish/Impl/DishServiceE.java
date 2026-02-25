@@ -101,6 +101,14 @@ public class DishServiceE implements DishServiceI {
         if (dish == null) {
             return new Result<String>().error("<UNK>");
         }
+        if (dishUpdateDTO.getFavourite() != null) {
+            if (dishUpdateDTO.getFavourite() < 1) {
+                return new Result<String>().error("喜好度不可小于1");
+            }
+            if (dishUpdateDTO.getFavourite() > 20) {
+                return new Result<String>().error("喜好度不可大于20");
+            }
+        }
         dish = Convert.convert(Dish.class, dishUpdateDTO);
         dishMapper.updateById(dish);
         dishLabelMapper.delete(new QueryWrapper<DishLabel>().eq("dish_id", dish.getId()).eq("user_id", userId));
