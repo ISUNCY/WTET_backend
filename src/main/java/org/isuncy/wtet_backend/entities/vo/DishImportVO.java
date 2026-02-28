@@ -4,22 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class DishGetVO {
-    String id;
+@NoArgsConstructor
+public class DishImportVO {
     String dishName;    //菜品名称
     Double price;       //价格
     String description; //描述
     Integer favourite;      //喜好度
     Integer eatTimes;       //食用次数
-    List<LabelGetVO> labels;
-
-    @Override
-    public String toString() {
-        return "{id:"+id+",名称:"+dishName+",价格:"+price+",描述:"+description+",喜好度:"+favourite+",食用次数:"+eatTimes+"}";
-    }
 }

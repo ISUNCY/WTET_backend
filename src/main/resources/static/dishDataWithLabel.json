@@ -1,0 +1,162 @@
+[
+  {
+    "dishName": "鱼香肉丝",
+    "price": 8.0,
+    "description": "经典的川菜，酸甜微辣，肉丝嫩滑，配以木耳和胡萝卜",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["川菜", "辣", "酸", "甜", "炒菜", "下饭菜", "家常菜"]
+  },
+  {
+    "dishName": "宫保鸡丁",
+    "price": 12.0,
+    "description": "糊辣荔枝味，鸡丁鲜嫩，花生酥脆，川菜代表之一",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["川菜", "辣", "甜", "炒菜", "下饭菜", "家常菜"]
+  },
+  {
+    "dishName": "麻婆豆腐",
+    "price": 6.0,
+    "description": "麻辣鲜香，豆腐嫩滑，肉末提味，经典川菜",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["川菜", "辣", "炒菜", "下饭菜", "家常菜", "高蛋白"]
+  },
+  {
+    "dishName": "酸辣土豆丝",
+    "price": 5.0,
+    "description": "清脆爽口，酸辣开胃，家常必备",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["酸", "辣", "炒菜", "下饭菜", "家常菜", "素食"]
+  },
+  {
+    "dishName": "西红柿炒鸡蛋",
+    "price": 7.0,
+    "description": "酸甜可口，营养丰富，国民家常菜",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["炒菜", "家常菜", "甜", "酸", "下饭菜"]
+  },
+  {
+    "dishName": "青椒肉丝",
+    "price": 9.0,
+    "description": "肉丝嫩滑，青椒清香，简单下饭",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["炒菜", "家常菜", "下饭菜", "清淡"]
+  },
+  {
+    "dishName": "红烧肉",
+    "price": 18.0,
+    "description": "色泽红亮，肥而不腻，入口即化，经典硬菜",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["炖菜", "家常菜", "下饭菜", "高蛋白", "甜"]
+  },
+  {
+    "dishName": "糖醋里脊",
+    "price": 15.0,
+    "description": "外酥里嫩，酸甜适口，老少皆宜",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["炒菜", "家常菜", "甜", "酸", "下饭菜", "高蛋白"]
+  },
+  {
+    "dishName": "水煮鱼",
+    "price": 25.0,
+    "description": "麻辣鲜香，鱼肉嫩滑，配菜丰富，川味招牌",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["川菜", "辣", "下饭菜", "高蛋白", "午餐", "晚餐"]
+  },
+  {
+    "dishName": "清炒时蔬",
+    "price": 6.0,
+    "description": "新鲜时令蔬菜，清淡健康，保留原味",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["炒菜", "素食", "清淡", "家常菜"]
+  },
+  {
+    "dishName": "回锅肉",
+    "price": 14.0,
+    "description": "肥瘦相间，蒜苗提香，咸鲜微辣，下饭神器",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["川菜", "炒菜", "下饭菜", "辣", "家常菜"]
+  },
+  {
+    "dishName": "孜然牛肉",
+    "price": 20.0,
+    "description": "孜然味浓，牛肉香嫩，搭配洋葱或香菜",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["炒菜", "高蛋白", "下饭菜", "家常菜"]
+  },
+  {
+    "dishName": "蒜蓉西兰花",
+    "price": 8.0,
+    "description": "蒜香浓郁，西兰花脆嫩，营养健康",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["炒菜", "素食", "清淡", "家常菜"]
+  },
+  {
+    "dishName": "酸菜鱼",
+    "price": 22.0,
+    "description": "酸辣开胃，鱼肉鲜嫩，酸菜爽脆",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["川菜", "酸", "辣", "下饭菜", "高蛋白", "汤羹"]
+  },
+  {
+    "dishName": "北京烤鸭",
+    "price": 48.0,
+    "description": "外皮酥脆，肉质鲜嫩，配葱丝黄瓜和甜面酱",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["高蛋白", "午餐", "晚餐"]
+  },
+  {
+    "dishName": "猪肉白菜饺子",
+    "price": 10.0,
+    "description": "皮薄馅大，肉香与白菜清甜融合，蘸醋更佳",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["主食", "家常菜", "午餐", "晚餐"]
+  },
+  {
+    "dishName": "炸酱面",
+    "price": 9.0,
+    "description": "筋道面条配浓郁炸酱，菜码丰富，老北京风味",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["主食", "家常菜", "午餐", "晚餐"]
+  },
+  {
+    "dishName": "蛋炒饭",
+    "price": 7.0,
+    "description": "米饭粒粒分明，鸡蛋金黄，简单美味",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["主食", "炒菜", "家常菜", "午餐", "晚餐"]
+  },
+  {
+    "dishName": "扬州炒饭",
+    "price": 10.0,
+    "description": "配料丰富，火腿、虾仁、青豆，色香味俱全",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["主食", "炒菜", "午餐", "晚餐"]
+  },
+  {
+    "dishName": "紫菜蛋花汤",
+    "price": 4.0,
+    "description": "清淡爽口，紫菜与蛋花相融，家常汤品",
+    "favourite": 10,
+    "eatTimes": 0,
+    "labels": ["汤羹", "清淡", "家常菜", "午餐", "晚餐"]
+  }
+]

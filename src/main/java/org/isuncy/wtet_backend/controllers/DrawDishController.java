@@ -14,14 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/draw")
+@RequestMapping("/api/draw")
 public class DrawDishController {
     @Autowired
     HttpServletRequest request;
 
     @Autowired
     DrawServiceI drawService;
-    private Module module;
 
     @PostMapping("/random")
     @Operation(summary = "随机抽取菜品")
@@ -40,18 +39,18 @@ public class DrawDishController {
     public Result<String> selectDishes(@RequestBody String[] dishIds) {
         String userId = JwtHelper.getUserId(request);
         if (userId == null) {
-            return new Result<String>().unAuth("<UNK>");
+            return new Result<String>().unAuth("error");
         }
         return drawService.selectDishes(userId, dishIds);
     }
 
-    @PostMapping("/cancel")
+    @GetMapping("/cancel")
     @Operation(summary = "取消选择菜品")
     @OperLog(module = "菜品抽取", logType = LogType.INFO, comment = "取消选择菜品")
-    public Result<String> cancelDish(@RequestParam String dishId) {
+    public Result<String> cancelDish(@RequestParam("dishId") String dishId) {
         String userId = JwtHelper.getUserId(request);
         if (userId == null) {
-            return new Result<String>().unAuth("<UNK>");
+            return new Result<String>().unAuth("error");
         }
         return drawService.cancelDish(userId, dishId);
     }

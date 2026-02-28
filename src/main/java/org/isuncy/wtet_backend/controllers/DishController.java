@@ -11,8 +11,10 @@ import org.isuncy.wtet_backend.entities.dto.DishUpdateDTO;
 import org.isuncy.wtet_backend.entities.dto.LabelUpdateDTO;
 import org.isuncy.wtet_backend.entities.pojo.Dish;
 import org.isuncy.wtet_backend.entities.pojo.Label;
+import org.isuncy.wtet_backend.entities.statics.PageList;
 import org.isuncy.wtet_backend.entities.statics.Result;
 import org.isuncy.wtet_backend.entities.vo.DishGetVO;
+import org.isuncy.wtet_backend.entities.vo.EatRecordVO;
 import org.isuncy.wtet_backend.entities.vo.LabelGetVO;
 import org.isuncy.wtet_backend.services.dish.DishServiceI;
 import org.isuncy.wtet_backend.utils.JwtHelper;
@@ -48,7 +50,7 @@ public class DishController {
     public Result<String> delDish(@RequestParam("dishId") String dishId) {
         String userId = JwtHelper.getUserId(request);
         if (!StringUtils.hasLength(userId)) {
-            return new Result<String>().unAuth("<UNK>");
+            return new Result<String>().unAuth("error");
         }
         return dishService.deleteDish(dishId);
     }
@@ -59,7 +61,7 @@ public class DishController {
     public Result<String> updateDish(@RequestBody DishUpdateDTO dishUpdateDTO) {
         String userId = JwtHelper.getUserId(request);
         if (!StringUtils.hasLength(userId)) {
-            return new Result<String>().unAuth("<UNK>");
+            return new Result<String>().unAuth("error");
         }
         return dishService.updateDish(userId, dishUpdateDTO);
     }
@@ -67,10 +69,10 @@ public class DishController {
     @GetMapping("/get/single")
     @Operation(summary = "获取单个菜品信息")
     @OperLog(module = "菜品", logType = LogType.INFO, comment = "获取单个菜品信息")
-    public Result<DishGetVO> getSingleDish(@RequestBody String dishId) {
+    public Result<DishGetVO> getSingleDish(@RequestParam("dishId") String dishId) {
         String userId = JwtHelper.getUserId(request);
         if (!StringUtils.hasLength(userId)) {
-            return new Result<DishGetVO>().unAuth("<UNK>");
+            return new Result<DishGetVO>().unAuth("error");
         }
         return dishService.getSingleDish(userId, dishId);
     }
@@ -78,10 +80,10 @@ public class DishController {
     @PostMapping("/get/list")
     @Operation(summary = "获取菜品信息列表")
     @OperLog(module = "菜品", logType = LogType.INFO, comment = "获取菜品信息列表")
-    public Result<List<DishGetVO>> getDishList(@RequestBody DishSelectDTO dishSelectDTO) {
+    public Result<List<DishGetVO>> getDishList(@RequestParam("page") Integer page, @RequestParam("size") Integer size, @RequestBody DishSelectDTO dishSelectDTO) {
         String userId = JwtHelper.getUserId(request);
         if (!StringUtils.hasLength(userId)) {
-            return new Result<List<DishGetVO>>().unAuth("<UNK>");
+            return new Result<List<DishGetVO>>().unAuth("error");
         }
         return dishService.selectDishes(userId, dishSelectDTO);
     }
@@ -128,9 +130,21 @@ public class DishController {
     public Result<String> deleteLabel(@RequestBody LabelUpdateDTO labelUpdateDTO) {
         String userId = JwtHelper.getUserId(request);
         if (userId == null) {
-            return new Result<String>().unAuth("<UNK>");
+            return new Result<String>().unAuth("error");
         }
         return dishService.updateLabel(userId, labelUpdateDTO.getLabelId(), labelUpdateDTO.getLabelName());
     }
+
+    @GetMapping("/eatRecord")
+    @Operation(summary = "饮食数据")
+    @OperLog(module = "饮食数据", logType = LogType.INFO, comment = "饮食数据")
+    public Result<List<EatRecordVO>> getEatRecord() {
+        String userId = JwtHelper.getUserId(request);
+        if (userId == null) {
+            return new Result<List<EatRecordVO>>().unAuth("error");
+        }
+        return dishService.getEatRecords(userId);
+    }
+
 
 }

@@ -1,23 +1,28 @@
 package org.isuncy.wtet_backend.services.draw.Impl;
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.lang.WeightRandom;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.isuncy.wtet_backend.entities.dto.DishSelectDTO;
 import org.isuncy.wtet_backend.entities.pojo.Dish;
 import org.isuncy.wtet_backend.entities.pojo.DishLabel;
+import org.isuncy.wtet_backend.entities.pojo.EatRecord;
 import org.isuncy.wtet_backend.entities.statics.Result;
 import org.isuncy.wtet_backend.entities.vo.DishGetVO;
 import org.isuncy.wtet_backend.mapper.dish.DishLabelMapper;
 import org.isuncy.wtet_backend.mapper.dish.DishMapper;
+import org.isuncy.wtet_backend.mapper.dish.EatRecordMapper;
 import org.isuncy.wtet_backend.mapper.dish.LabelMapper;
 import org.isuncy.wtet_backend.services.dish.DishServiceI;
 import org.isuncy.wtet_backend.services.draw.DrawServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class DrawServiceE implements DrawServiceI {
@@ -25,6 +30,8 @@ public class DrawServiceE implements DrawServiceI {
     private DishServiceI dishService;
     @Autowired
     private DishMapper dishMapper;
+    @Autowired
+    private EatRecordMapper eatRecordMapper;
 
     @Override
     public Result<DishGetVO> randomDish(String userId, DishSelectDTO dishSelectDTO) {
@@ -42,13 +49,19 @@ public class DrawServiceE implements DrawServiceI {
 
     @Override
     public Result<String> selectDishes(String userId, String[] dishIds) {
-        List<Dish> dishes = dishMapper.selectList(new QueryWrapper<Dish>().eq("user_id", userId).in("dish_id", (Object) dishIds));
+        List<Dish> dishes = dishMapper.selectList(new QueryWrapper<Dish>().eq("user_id", userId).in("id", dishIds));
         for (Dish dish : dishes) {
             if (dish.getFavourite() < 20) {
                 dish.setFavourite(dish.getFavourite() + 1);
                 dish.setEatTimes(dish.getEatTimes() + 1);
                 dishMapper.updateById(dish);
             }
+            EatRecord eatRecord = new EatRecord();
+            eatRecord.setDishId(dish.getId());
+            eatRecord.setUserId(userId);
+            eatRecord.setEatDatetime(LocalDateTime.now());
+            eatRecord.setId(UUID.randomUUID().toString());
+            eatRecordMapper.insert(eatRecord);
         }
         return new Result<String>().success();
     }

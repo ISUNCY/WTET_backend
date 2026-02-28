@@ -5,6 +5,7 @@ import cn.hutool.core.lang.UUID;
 import cn.hutool.crypto.digest.DigestUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.isuncy.wtet_backend.entities.dto.UserLoginDTO;
+import org.isuncy.wtet_backend.entities.dto.UserPassUpdateDTO;
 import org.isuncy.wtet_backend.entities.dto.UserRegisterDTO;
 import org.isuncy.wtet_backend.entities.dto.UserUpdateDTO;
 import org.isuncy.wtet_backend.entities.pojo.User;
@@ -66,10 +67,9 @@ public class UserServiceE implements UserServiceI {
             return new Result<String>().error("update failed");
         }
         user.setNickname(userUpdateDTO.getNickname());
-        user.setPassword(DigestUtil.sha256Hex(userUpdateDTO.getPassword()));
-        user.setUsername(userUpdateDTO.getUsername());
         user.setWeight(userUpdateDTO.getWeight());
         user.setHeight(userUpdateDTO.getHeight());
+        user.setPreference(userUpdateDTO.getPreference());
         userMapper.updateById(user);
         return new Result<String>().success();
     }
@@ -82,6 +82,17 @@ public class UserServiceE implements UserServiceI {
         }
         UserInfoVO userInfoVo = Convert.convert(UserInfoVO.class, user);
         return new Result<UserInfoVO>().success(userInfoVo);
+    }
+
+    @Override
+    public Result<String> updatePass(String userId, UserPassUpdateDTO userPassUpdateDTO) {
+        User user = userMapper.selectOne(new QueryWrapper<User>().eq("id", userId).eq("password", userPassUpdateDTO.getOldPass()));
+        if (user == null) {
+            return new Result<String>().error("用户或密码错误");
+        }
+        user.setPassword(DigestUtil.sha256Hex(userPassUpdateDTO.getNewPass()));
+        userMapper.updateById(user);
+        return new Result<String>().success();
     }
 
 }

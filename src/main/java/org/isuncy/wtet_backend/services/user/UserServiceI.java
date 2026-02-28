@@ -1,6 +1,7 @@
 package org.isuncy.wtet_backend.services.user;
 
 import org.isuncy.wtet_backend.entities.dto.UserLoginDTO;
+import org.isuncy.wtet_backend.entities.dto.UserPassUpdateDTO;
 import org.isuncy.wtet_backend.entities.dto.UserRegisterDTO;
 import org.isuncy.wtet_backend.entities.dto.UserUpdateDTO;
 import org.isuncy.wtet_backend.entities.pojo.User;
@@ -18,4 +19,6 @@ public interface UserServiceI {
     Result<String> updateInfo(String userId, UserUpdateDTO userUpdateDTO);
 
     Result<UserInfoVO> getUserInfo(String userId);
+
+    Result<String> updatePass(String userId, UserPassUpdateDTO userPassUpdateDTO);
 }

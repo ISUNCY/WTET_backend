@@ -5,11 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserUpdateDTO {
-    private String nickname;
-    private Double weight;
-    private Double height;
-    private String preference;
+@NoArgsConstructor
+public class UserPassUpdateDTO {
+    private String oldPass;
+    private String newPass;
 }

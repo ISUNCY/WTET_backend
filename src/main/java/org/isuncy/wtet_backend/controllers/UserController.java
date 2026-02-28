@@ -5,11 +5,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.isuncy.wtet_backend.annotation.LogType;
 import org.isuncy.wtet_backend.annotation.OperLog;
 import org.isuncy.wtet_backend.entities.dto.UserLoginDTO;
+import org.isuncy.wtet_backend.entities.dto.UserPassUpdateDTO;
 import org.isuncy.wtet_backend.entities.dto.UserRegisterDTO;
 import org.isuncy.wtet_backend.entities.dto.UserUpdateDTO;
 import org.isuncy.wtet_backend.entities.statics.Result;
 import org.isuncy.wtet_backend.entities.vo.UserInfoVO;
 import org.isuncy.wtet_backend.entities.vo.UserLoginVO;
+import org.isuncy.wtet_backend.services.dataImport.DataImportServiceI;
 import org.isuncy.wtet_backend.services.user.UserServiceI;
 import org.isuncy.wtet_backend.utils.JwtHelper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,8 @@ public class UserController {
 
     @Autowired
     private UserServiceI userService;
+    @Autowired
+    private DataImportServiceI dataImportService;
     @Autowired
     private HttpServletRequest request;
 
@@ -52,9 +56,7 @@ public class UserController {
     @Operation(summary = "更新用户信息")
     @OperLog(module = "用户", logType = LogType.INFO, comment = "更新用户信息")
     public Result<String> update(@RequestBody UserUpdateDTO userUpdateDTO) {
-        if (!StringUtils.hasLength(userUpdateDTO.getUsername())
-        || !StringUtils.hasLength(userUpdateDTO.getPassword())
-        || !StringUtils.hasLength(userUpdateDTO.getNickname())) {
+        if (!StringUtils.hasLength(userUpdateDTO.getNickname())) {
             return new Result<String>().error("error");
         }
         String userId = JwtHelper.getUserId(request);
@@ -64,7 +66,18 @@ public class UserController {
         return userService.updateInfo(userId, userUpdateDTO);
     }
 
-    @GetMapping("/getInfo")
+    @PostMapping("/updatepass")
+    @Operation(summary = "更新用户密码")
+    @OperLog(module = "用户", logType = LogType.INFO, comment = "更新用户密码")
+    public Result<String> updatePass(@RequestBody UserPassUpdateDTO userPassUpdateDTO) {
+        String userId = JwtHelper.getUserId(request);
+        if (userId == null) {
+            return new Result<String>().unAuth("error");
+        }
+        return userService.updatePass(userId, userPassUpdateDTO);
+    }
+
+    @GetMapping("/info")
     @Operation(summary = "获取用户信息")
     @OperLog(module = "用户", logType = LogType.INFO, comment = "获取用户详细信息")
     public Result<UserInfoVO> getSelfInfo() {
@@ -73,6 +86,17 @@ public class UserController {
             return new Result<UserInfoVO>().unAuth("未登录");
         }
         return userService.getUserInfo(userId);
+    }
+
+    @GetMapping("/dataImport")
+    @Operation(summary = "导入默认数据")
+    @OperLog(module = "用户", logType = LogType.INFO, comment = "导入默认数据")
+    public Result<String> importDefaultData() {
+        String userId = JwtHelper.getUserId(request);
+        if (userId == null) {
+            return new Result<String>().unAuth("error");
+        }
+        return dataImportService.importDefaultData(userId);
     }
 
 }

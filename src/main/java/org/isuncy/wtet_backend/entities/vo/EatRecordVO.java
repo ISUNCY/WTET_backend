@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserInfoVO {
-    private String username;
-    private String nickname;
-    private Double weight;
-    private Double height;
-    private Double preference;
+public class EatRecordVO {
+    private String dishName;
+    private String eatDateTime;
 }

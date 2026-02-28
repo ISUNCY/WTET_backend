@@ -1,6 +1,5 @@
 package org.isuncy.wtet_backend.services.dish.Impl;
 
-import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.UUID;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -9,12 +8,16 @@ import org.isuncy.wtet_backend.entities.dto.DishSelectDTO;
 import org.isuncy.wtet_backend.entities.dto.DishUpdateDTO;
 import org.isuncy.wtet_backend.entities.pojo.Dish;
 import org.isuncy.wtet_backend.entities.pojo.DishLabel;
+import org.isuncy.wtet_backend.entities.pojo.EatRecord;
 import org.isuncy.wtet_backend.entities.pojo.Label;
+import org.isuncy.wtet_backend.entities.statics.PageList;
 import org.isuncy.wtet_backend.entities.statics.Result;
 import org.isuncy.wtet_backend.entities.vo.DishGetVO;
+import org.isuncy.wtet_backend.entities.vo.EatRecordVO;
 import org.isuncy.wtet_backend.entities.vo.LabelGetVO;
 import org.isuncy.wtet_backend.mapper.dish.DishLabelMapper;
 import org.isuncy.wtet_backend.mapper.dish.DishMapper;
+import org.isuncy.wtet_backend.mapper.dish.EatRecordMapper;
 import org.isuncy.wtet_backend.mapper.dish.LabelMapper;
 import org.isuncy.wtet_backend.services.dish.DishServiceI;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +36,8 @@ public class DishServiceE implements DishServiceI {
     private LabelMapper labelMapper;
     @Autowired
     private DishLabelMapper dishLabelMapper;
+    @Autowired
+    private EatRecordMapper eatRecordMapper;
 
     @Override
     public Result<String> addLabel(String userId, String labelName) {
@@ -58,6 +63,7 @@ public class DishServiceE implements DishServiceI {
             vo.setLabelName(label.getLabelName());
             voList.add(vo);
         }
+
         return new Result<List<LabelGetVO>>().success(voList);
     }
 
@@ -99,7 +105,7 @@ public class DishServiceE implements DishServiceI {
     public Result<String> updateDish(String userId, DishUpdateDTO dishUpdateDTO) {
         Dish dish = dishMapper.selectById(dishUpdateDTO.getId());
         if (dish == null) {
-            return new Result<String>().error("<UNK>");
+            return new Result<String>().error("error");
         }
         if (dishUpdateDTO.getFavourite() != null) {
             if (dishUpdateDTO.getFavourite() < 1) {
@@ -134,7 +140,7 @@ public class DishServiceE implements DishServiceI {
     public Result<DishGetVO> getSingleDish(String userId, String dishId) {
         Dish dish = dishMapper.selectOne(new QueryWrapper<Dish>().eq("dish_id", dishId).eq("user_id", userId));
         if (dish == null) {
-            return new Result<DishGetVO>().error("<UNK>");
+            return new Result<DishGetVO>().error("error");
         }
         DishGetVO dishGetVO = Convert.convert(DishGetVO.class, dish);
         dishGetVO.setLabels(getDishLabels(userId, dishId));
@@ -157,8 +163,11 @@ public class DishServiceE implements DishServiceI {
         List<DishLabel> dishLabelList = dishLabelMapper.selectList(
                 new QueryWrapper<DishLabel>()
                         .eq("user_id", userId)
-                        .in(!dishSelectDTO.getLabelId().isEmpty(), "dish_id", dishSelectDTO.getLabelId())
+                        .in(!dishSelectDTO.getLabelId().isEmpty(), "label_id", dishSelectDTO.getLabelId())
         );
+        if (dishLabelList.isEmpty()) {
+            return new Result<List<DishGetVO>>().success(new ArrayList<>());
+        }
         List<String> dishIds = new ArrayList<>();
         for (DishLabel dishLabel : dishLabelList) {
             dishIds.add(dishLabel.getDishId());
@@ -166,7 +175,7 @@ public class DishServiceE implements DishServiceI {
         List<Dish> dishes = dishMapper.selectList(
                 new QueryWrapper<Dish>()
                         .eq("user_id", userId)
-                        .eq(!dishSelectDTO.getLabelId().isEmpty(), "id", dishIds)
+                        .in(!dishSelectDTO.getLabelId().isEmpty(), "id", dishIds.toArray())
                         .like(StringUtils.hasLength(dishSelectDTO.getDishName()), "dish_name", dishSelectDTO.getDishName())
                         .ge(dishSelectDTO.getPrice_low() != null, "price", dishSelectDTO.getPrice_low())
                         .le(dishSelectDTO.getPrice_high() != null, "price", dishSelectDTO.getPrice_high())
@@ -189,4 +198,20 @@ public class DishServiceE implements DishServiceI {
         labelMapper.updateById(label);
         return new Result<String>().success();
     }
+
+    @Override
+    public Result<List<EatRecordVO>> getEatRecords(String userId) {
+        List<EatRecord> eatRecords = eatRecordMapper.selectList(new QueryWrapper<EatRecord>().eq("user_id", userId));
+        List<EatRecordVO> eatRecordVOs = new ArrayList<>();
+        for (EatRecord eatRecord : eatRecords) {
+            Dish dish = dishMapper.selectById(eatRecord.getDishId() );
+            if (dish == null) continue;
+            EatRecordVO eatRecordVO = new EatRecordVO();
+            eatRecordVO.setDishName(dish.getDishName());
+            eatRecordVO.setEatDateTime(eatRecord.getEatDatetime().toString());
+            eatRecordVOs.add(eatRecordVO);
+        }
+        return new Result<List<EatRecordVO>>().success(eatRecordVOs);
+    }
+
 }

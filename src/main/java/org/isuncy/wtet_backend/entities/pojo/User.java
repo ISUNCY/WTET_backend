@@ -19,4 +19,6 @@ public class User {
     private String password;
     private Double weight;
     private Double height;
+    private String preference;  //饮食偏好
+    private boolean dataImport;
 }
