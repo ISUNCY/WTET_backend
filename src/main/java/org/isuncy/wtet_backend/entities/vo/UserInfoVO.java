@@ -12,5 +12,5 @@ public class UserInfoVO {
     private String nickname;
     private Double weight;
     private Double height;
-    private Double preference;
+    private String preference;
 }

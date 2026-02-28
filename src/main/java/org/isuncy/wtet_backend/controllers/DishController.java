@@ -80,7 +80,7 @@ public class DishController {
     @PostMapping("/get/list")
     @Operation(summary = "获取菜品信息列表")
     @OperLog(module = "菜品", logType = LogType.INFO, comment = "获取菜品信息列表")
-    public Result<List<DishGetVO>> getDishList(@RequestParam("page") Integer page, @RequestParam("size") Integer size, @RequestBody DishSelectDTO dishSelectDTO) {
+    public Result<List<DishGetVO>> getDishList(@RequestBody DishSelectDTO dishSelectDTO) {
         String userId = JwtHelper.getUserId(request);
         if (!StringUtils.hasLength(userId)) {
             return new Result<List<DishGetVO>>().unAuth("error");
